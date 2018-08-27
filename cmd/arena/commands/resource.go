@@ -77,3 +77,43 @@ func gpuInContainerDeprecated(container v1.Container) int64 {
 
 	return val.Value()
 }
+
+// filter out the pods which use resources
+func resourcePods(heapsterEndpointUrl string, pods []v1.Pod) (podsWithResource []v1.Pod) {
+	for _, pod := range pods {
+		if gpuInPod(pod) > 0 || cpuInPod(heapsterEndpointUrl, pod) > 0 || memoryInPod(heapsterEndpointUrl, pod) > 0 {
+			podsWithResource = append(podsWithResource, pod)
+		}
+	}
+	return podsWithResource
+}
+
+// The way to get CPU Count of Node
+func cpuInNode(node v1.Node) int64 {
+	val, ok := node.Status.Capacity[v1.ResourceCPU]
+
+	if !ok {
+		return 0
+	}
+
+	return val.MilliValue()
+}
+
+func cpuInPod(heapsterEndpointUrl string, pod v1.Pod) (cpuCount int64) {
+	return getPodCPUUsage(heapsterEndpointUrl, pod.Name, pod.Namespace).MilliValue()
+}
+
+// The way to get Memory Count of Node
+func memoryInNode(node v1.Node) int64 {
+	val, ok := node.Status.Capacity[v1.ResourceMemory]
+
+	if !ok {
+		return 0
+	}
+
+	return val.Value()
+}
+
+func memoryInPod(heapsterEndpointUrl string, pod v1.Pod) (memoryCount int64) {
+	return getPodMemoryUsage(heapsterEndpointUrl, pod.Name, pod.Namespace).Value()
+}

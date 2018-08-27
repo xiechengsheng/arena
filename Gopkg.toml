@@ -34,6 +34,10 @@
   version = "0.0.2"
 
 [[constraint]]
+  name = "github.com/bitly/go-simplejson"
+  version = "0.5.0"
+
+[[constraint]]
   name = "gopkg.in/yaml.v2"
   version = "2.2.1"
 
@@ -56,4 +60,3 @@
 [prune]
   go-tests = true
   unused-packages = true
-
