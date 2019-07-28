@@ -99,7 +99,6 @@ func NewDiagnoseCommand() *cobra.Command {
 	return command
 }
 
-// TODO: 先不考虑创建压缩包，直接创建文件夹看看
 func diagnoseJob(client *kubernetes.Clientset, jobName, dirPath string) {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	dirName := filepath.Join(dirPath, fmt.Sprintf("diagnose-%s-%s", jobName, timestamp))
@@ -109,7 +108,6 @@ func diagnoseJob(client *kubernetes.Clientset, jobName, dirPath string) {
 		log.Errorf("Failed to create the log folder due to %v", err)
 		return
 	}
-	//defer os.RemoveAll(dirName)
 
 	// 0. prepare environment
 	kubePath, err := exec.LookPath(KUBECTL_BIN)
